@@ -1,0 +1,1917 @@
+package theorypoker;
+
+import java.util.*;
+import java.lang.*;
+
+public class TheoryPoker 
+{    
+    public static void main(String[] args) 
+    {
+        //initialize the input
+        Scanner input=new Scanner(System.in);
+        
+        //initialize the standard base deck
+        List<String> baseDeck=Arrays.asList("2D", "2H", "2S", "2C", "3D", "3H", "3S", "3C",
+                  "4D", "4H", "4S", "4C", "5D", "5H", "5S", "5C", "6D", "6H", "6S", "6C",
+                  "7D", "7H", "7S", "7C", "8D", "8H", "8S", "8C", "9D", "9H", "9S", "9C",
+                  "TD", "TH", "TS", "TC", "JD", "JH", "JS", "JC", "QD", "QH", "QS", "QC",
+                  "KD", "KH", "KS", "KC", "AD", "AH", "AS", "AC");
+        
+        //create a round deck value to manipulate and initialize to the standard base deck
+        List<String> roundDeck=baseDeck;
+        
+        //initialize the hands
+        List<String> playerHand=Arrays.asList("00", "00", "00", "00", "00"); 
+        List<String> computerHand=Arrays.asList("00", "00", "00", "00", "00");
+        
+        //initialize variables for control flow
+        int round=0;
+        String cardSelect;
+        int selectionValid=0;
+              
+        if(round==0) 
+        {
+            roundDeck=baseDeck; //reset the deck
+            Collections.shuffle(roundDeck);  //randomly shuffle deck elements
+            round=1; //shuffling and setup done, so advance the round
+            playerHand=Arrays.asList("00", "00", "00", "00", "00"); //initialize to 0
+            computerHand=Arrays.asList("00", "00", "00", "00", "00"); //initialize to 0
+        }
+        
+        if(round==1) 
+        {
+            //deals out the player hand
+            playerHand=Arrays.asList(roundDeck.get(0), roundDeck.get(1), roundDeck.get(2), roundDeck.get(3), roundDeck.get(4)); 
+            
+            //removes the used cards from the deck by creating a sublist starting AFTER the 5 dealt cards
+            roundDeck=roundDeck.subList(5, (roundDeck.size())-5);
+            
+            //deals out the computer hand
+            computerHand=Arrays.asList(roundDeck.get(0), roundDeck.get(1), roundDeck.get(2), roundDeck.get(3), roundDeck.get(4)); 
+            
+            //removes the used cards from the deck by creating a sublist starting AFTER the 5 dealt cards
+            roundDeck=roundDeck.subList(5, (roundDeck.size())-5);
+                  
+            round=2; //advances to sorting and swapping round
+        }
+        if(round==2) //sorting and swapping round
+        {
+            //computer hand sorting and swapping method
+            computerHand=sortHand(computerHand); //sorts
+            cardSelect=computerCardSelect(computerHand, evaluateHand(computerHand)); //returns which cards to swap
+            //swap the selected cards
+            switch(cardSelect)
+                    {
+                        case "00000":
+                            selectionValid=1;
+                            break;
+                        case "00001":
+                            selectionValid=1;
+                            computerHand.set(4, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "00010":
+                            selectionValid=1;
+                            computerHand.set(3, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "00011":
+                            selectionValid=1;
+                            computerHand.set(3, roundDeck.get(0));
+                            computerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "00100":
+                            selectionValid=1;
+                            computerHand.set(2, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "00101":
+                            selectionValid=1;
+                            computerHand.set(2, roundDeck.get(0));
+                            computerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "00110":
+                            selectionValid=1;
+                            computerHand.set(2, roundDeck.get(0));
+                            computerHand.set(3, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "00111":
+                            selectionValid=1;
+                            computerHand.set(2, roundDeck.get(0));
+                            computerHand.set(3, roundDeck.get(1));
+                            computerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "01000":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "01001":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            computerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "01010":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            computerHand.set(3, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "01011":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            computerHand.set(3, roundDeck.get(1));
+                            computerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "01100":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            computerHand.set(2, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "01101":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            computerHand.set(2, roundDeck.get(1));
+                            computerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "01110":
+                            selectionValid=1;
+                            computerHand.set(1, roundDeck.get(0));
+                            computerHand.set(2, roundDeck.get(1));
+                            computerHand.set(3, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "10000":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "10001":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "10010":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(3, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "10011":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(3, roundDeck.get(1));
+                            computerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "10100":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(2, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "10101":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(2, roundDeck.get(1));
+                            computerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "10110":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(2, roundDeck.get(1));
+                            computerHand.set(3, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "11000":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(1, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "11001":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(1, roundDeck.get(1));
+                            computerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "11010":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(1, roundDeck.get(1));
+                            computerHand.set(3, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "11100":
+                            selectionValid=1;
+                            computerHand.set(0, roundDeck.get(0));
+                            computerHand.set(1, roundDeck.get(1));
+                            computerHand.set(2, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break; 
+                        default:
+                            //not a valid entry
+                            System.out.println("Not a valid entry. Only 0s and 1s accepted and only 3 or less cards can be swapped.");
+                            break;
+                    } //end switch statement
+            computerHand=sortHand(computerHand); //sorts again
+            
+            //player hand sorting and swapping
+            playerHand=sortHand(playerHand);
+            selectionValid=0;
+            while(selectionValid==0)
+            {
+                System.out.println("Player hand: ");
+                printHand(playerHand);
+                System.out.println("You may swap up to 3 cards; 0 to keep, 1 to swap (ex. 00000, 10101). Swap which cards?");
+                cardSelect=input.nextLine();
+                    switch(cardSelect)
+                    {
+                        case "00000":
+                            selectionValid=1;
+                            break;
+                        case "00001":
+                            selectionValid=1;
+                            playerHand.set(4, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "00010":
+                            selectionValid=1;
+                            playerHand.set(3, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "00011":
+                            selectionValid=1;
+                            playerHand.set(3, roundDeck.get(0));
+                            playerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "00100":
+                            selectionValid=1;
+                            playerHand.set(2, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "00101":
+                            selectionValid=1;
+                            playerHand.set(2, roundDeck.get(0));
+                            playerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "00110":
+                            selectionValid=1;
+                            playerHand.set(2, roundDeck.get(0));
+                            playerHand.set(3, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "00111":
+                            selectionValid=1;
+                            playerHand.set(2, roundDeck.get(0));
+                            playerHand.set(3, roundDeck.get(1));
+                            playerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "01000":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "01001":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            playerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "01010":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            playerHand.set(3, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "01011":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            playerHand.set(3, roundDeck.get(1));
+                            playerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "01100":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            playerHand.set(2, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "01101":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            playerHand.set(2, roundDeck.get(1));
+                            playerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "01110":
+                            selectionValid=1;
+                            playerHand.set(1, roundDeck.get(0));
+                            playerHand.set(2, roundDeck.get(1));
+                            playerHand.set(3, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "10000":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-1);
+                            break;
+                        case "10001":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(4, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "10010":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(3, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "10011":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(3, roundDeck.get(1));
+                            playerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "10100":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(2, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "10101":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(2, roundDeck.get(1));
+                            playerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "10110":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(2, roundDeck.get(1));
+                            playerHand.set(3, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "11000":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(1, roundDeck.get(1));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-2);
+                            break;
+                        case "11001":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(1, roundDeck.get(1));
+                            playerHand.set(4, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "11010":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(1, roundDeck.get(1));
+                            playerHand.set(3, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break;
+                        case "11100":
+                            selectionValid=1;
+                            playerHand.set(0, roundDeck.get(0));
+                            playerHand.set(1, roundDeck.get(1));
+                            playerHand.set(2, roundDeck.get(2));
+                            roundDeck=roundDeck.subList(1, roundDeck.size()-3);
+                            break; 
+                        default:
+                            //not a valid entry
+                            System.out.println("Not a valid entry. Only 0s and 1s accepted and only 3 or less cards can be swapped.");
+                            break;
+                    } //end switch statement
+            } //end while loop
+            round=3; //then advance to evaluation round
+            playerHand=sortHand(playerHand); //sort again bc just swapped
+        } //end round 2
+        
+        if(round==3) //evaluation round
+        {
+           System.out.println("Final player hand: ");
+           printHand(playerHand);  //print final hand
+           System.out.println("Final player hand evaluates to: "+evaluateHand(playerHand));
+           
+           System.out.println("Final computer hand: ");
+           printHand(computerHand);  //print final hand
+           System.out.println("Final computer hand evaluates to: "+evaluateHand(computerHand));
+           
+           System.out.println(compareHands(evaluateHand(playerHand), playerHand, evaluateHand(computerHand), computerHand));
+        } //end round 3
+        
+    }//end main  
+
+ //separate method that sorts the hand
+public static List<String> sortHand(List<String> hand) 
+{
+    int reset=1;
+    for(int i=0; i<4; i++)
+    {
+        if(reset==0)
+        {
+            i=0;
+            reset=1;
+        }
+        String card1=hand.get(i);
+        String card2=hand.get(i+1);
+        if((((card1.charAt(0))>='2') &&  (card1.charAt(0)<='9')) && (((card2.charAt(0))>='A') 
+           &&  (card2.charAt(0)<='T'))) //card 1 is numeric and card 2 is a face card
+        {
+           hand.set(i, card2);
+           hand.set(i+1, card1);
+           reset=0; //resets each time you swap so that they are in the correct order
+           i=0;//in case i=3 for swap
+           //update for the next statements
+            card1=hand.get(i);
+            card2=hand.get(i+1);
+        }
+        
+        if((((card1.charAt(0))>='A') &&  (card1.charAt(0)<='T')) && (((card2.charAt(0))>='A') 
+           &&  (card2.charAt(0)<='T'))) //card 1 is numeric and card 2 is a face card
+        {
+            if(((card1.charAt(0)=='T') || (card1.charAt(0)=='J') || (card1.charAt(0)=='Q') 
+                    || (card1.charAt(0)=='K')) && (card2.charAt(0)=='A'))
+            {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+            }
+            else if(((card1.charAt(0)=='T') || (card1.charAt(0)=='J') || (card1.charAt(0)=='Q')) && (card2.charAt(0)=='K'))
+           {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+           }
+           else if(((card1.charAt(0)=='T') || (card1.charAt(0)=='J')) && (card2.charAt(0)=='Q'))
+           {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+           }
+           else if((card1.charAt(0)=='T') && (card2.charAt(0)=='J'))
+           {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+           }
+        }
+       else //both numeric
+        {   
+            if((Character.getNumericValue(card1.charAt(0))) < (Character.getNumericValue(card2.charAt(0))))
+               {
+                   hand.set(i, card2);
+                   hand.set(i+1, card1);
+                   reset=0; //resets each time you swap so that they are in the correct order  
+                   i=0;//in case i=3 for swap
+                } 
+        }
+       if(card1.charAt(0)==card2.charAt(0)) //only sorts by suit if first char is the same
+       {
+           if((card1.charAt(1)!='H') && (card2.charAt(1)=='H')) //hearts is high suit
+           {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+           }
+           else if(((card1.charAt(1)=='C') ||(card1.charAt(1)=='S'))&& card2.charAt(1)=='D') //diamonds second highest
+           {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+           }
+           else if(card1.charAt(1)=='C' && card2.charAt(1)=='S') //spades next
+           {
+               hand.set(i, card2);
+               hand.set(i+1, card1);
+               reset=0; //resets each time you swap so that they are in the correct order
+               i=0;//in case i=3 for swap
+           }
+        }
+    }
+    return hand;
+} //end sortHand method  
+          
+//separate method that returns what the hand evaluates to 
+public static String evaluateHand(List<String> hand) 
+{ 
+    String card1=hand.get(0);
+    String card2=hand.get(1); 
+    String card3=hand.get(2); 
+    String card4=hand.get(3); 
+    String card5=hand.get(4); 
+    //Royal flush- all same suit, A K Q J 0 
+    if( 
+        ((card1.charAt(1)==card2.charAt(1))&&(card2.charAt(1)==card3.charAt(1))&&(card3.charAt(1)==card4.charAt(1))
+        &&(card4.charAt(1)==card5.charAt(1)))
+        && (card1.charAt(0)=='A' && card2.charAt(0)=='K' && card3.charAt(0)=='Q' && card4.charAt(0) =='0') ) 
+    { 
+        return "Royal Flush"; 
+    } 
+    //Straight flush- all same suit, 5 cards in a sequence
+    else if(
+            ((card1.charAt(1)==card2.charAt(1))&&(card2.charAt(1)==card3.charAt(1))&&(card3.charAt(1)==card4.charAt(1))
+            &&(card4.charAt(1)==card5.charAt(1)))
+            &&
+            ((card1.charAt(0)=='A' && card2.charAt(0)=='K' && card3.charAt(0)=='Q' && card4.charAt(0)=='J' && card5.charAt(0)=='T')
+            ||
+            (card1.charAt(0)=='K' && card2.charAt(0)=='Q' && card3.charAt(0)=='J' && card4.charAt(0)=='T' && card5.charAt(0)=='9')
+            ||
+            (card1.charAt(0)=='Q' && card2.charAt(0)=='J' && card3.charAt(0)=='T' && card4.charAt(0)=='9' && card5.charAt(0)=='8')
+            ||
+            (card1.charAt(0)=='J' && card2.charAt(0)=='T' && card3.charAt(0)=='9' && card4.charAt(0)=='8' && card5.charAt(0)=='7')
+            ||
+            (card1.charAt(0)=='T' && card2.charAt(0)=='9' && card3.charAt(0)=='8' && card4.charAt(0)=='7' && card5.charAt(0)=='6')
+            ||
+            (card1.charAt(0)=='9' && card2.charAt(0)=='8' && card3.charAt(0)=='7' && card4.charAt(0)=='6' && card5.charAt(0)=='5')
+            ||
+            (card1.charAt(0)=='8' && card2.charAt(0)=='7' && card3.charAt(0)=='6' && card4.charAt(0)=='5' && card5.charAt(0)=='4')
+            ||
+            (card1.charAt(0)=='7' && card2.charAt(0)=='6' && card3.charAt(0)=='5' && card4.charAt(0)=='4' && card5.charAt(0)=='3')
+            ||
+            (card1.charAt(0)=='6' && card2.charAt(0)=='5' && card3.charAt(0)=='4' && card4.charAt(0)=='3' && card5.charAt(0)=='2'))
+            )
+    {
+        return "Straight Flush";
+    }
+    //4 of a kind
+    else if(
+            ((card1.charAt(0)==card2.charAt(0))
+            &&
+            (card2.charAt(0)==card3.charAt(0))
+            &&
+            (card3.charAt(0)==card4.charAt(0)))
+            ||
+            ((card2.charAt(0)==card3.charAt(0))
+            &&
+            (card3.charAt(0)==card4.charAt(0))
+            &&
+            (card4.charAt(0)==card5.charAt(0))))
+    {
+        return "4 of a kind";
+    }
+    //Full house: 3 of a kind and 2 of a kind
+    else if(
+            (((card1.charAt(0)==card2.charAt(0)) && (card2.charAt(0)==card3.charAt(0))) && (card4.charAt(0)==card5.charAt(0)))
+            ||
+            ((card1.charAt(0)==card2.charAt(0)) && ((card3.charAt(0)==card4.charAt(0)) && (card4.charAt(0)==card5.charAt(0)))))
+    {
+        return "Full House";
+    }
+    //Flush: all same suit, any cards
+    else if(
+            ((card1.charAt(1)==card2.charAt(1))&&(card2.charAt(1)==card3.charAt(1))&&(card3.charAt(1)==card4.charAt(1))
+            &&(card4.charAt(1)==card5.charAt(1)))
+            )
+    {
+        return "Flush";
+    }
+    //Straight: 5 in a row, any suit
+    else if(
+            (card1.charAt(0)=='A' && card2.charAt(0)=='K' && card3.charAt(0)=='Q' && card4.charAt(0)=='J' && card5.charAt(0)=='T')
+||
+(card1.charAt(0)=='K' && card2.charAt(0)=='Q' && card3.charAt(0)=='J' && card4.charAt(0)=='T' && card5.charAt(0)=='9')
+||
+(card1.charAt(0)=='Q' && card2.charAt(0)=='J' && card3.charAt(0)=='T' && card4.charAt(0)=='9' && card5.charAt(0)=='8')
+||
+(card1.charAt(0)=='J' && card2.charAt(0)=='T' && card3.charAt(0)=='9' && card4.charAt(0)=='8' && card5.charAt(0)=='7')
+||
+(card1.charAt(0)=='T' && card2.charAt(0)=='9' && card3.charAt(0)=='8' && card4.charAt(0)=='7' && card5.charAt(0)=='6')
+||
+(card1.charAt(0)=='9' && card2.charAt(0)=='8' && card3.charAt(0)=='7' && card4.charAt(0)=='6' && card5.charAt(0)=='5')
+||
+(card1.charAt(0)=='8' && card2.charAt(0)=='7' && card3.charAt(0)=='6' && card4.charAt(0)=='5' && card5.charAt(0)=='4')
+||
+(card1.charAt(0)=='7' && card2.charAt(0)=='6' && card3.charAt(0)=='5' && card4.charAt(0)=='4' && card5.charAt(0)=='3')
+||
+(card1.charAt(0)=='6' && card2.charAt(0)=='5' && card3.charAt(0)=='4' && card4.charAt(0)=='3' && card5.charAt(0)=='2')
+            )
+    {
+        return "Straight";
+    }
+    //3 of a kind
+    else if(
+            ((card1.charAt(0)==card2.charAt(0)) && (card2.charAt(0)==card3.charAt(0)))
+            ||
+            ((card2.charAt(0)==card3.charAt(0)) && (card3.charAt(0)==card4.charAt(0)))
+            ||
+            ((card3.charAt(0)==card4.charAt(0)) && (card4.charAt(0)==card5.charAt(0))))
+    {
+        return "3 of a kind";
+    }
+    //2 Pairs
+    else if(
+            ((card1.charAt(0)==card2.charAt(0)) && (card3.charAt(0)==card4.charAt(0)))
+            ||
+            ((card2.charAt(0)==card3.charAt(0)) && (card4.charAt(0)==card5.charAt(0))))
+    {
+        return "Two Pair";
+    }
+    //Pair
+    else if((card1.charAt(0)==card2.charAt(0))
+            ||
+            (card2.charAt(0)==card3.charAt(0))
+            ||
+            (card3.charAt(0)==card4.charAt(0))
+            ||
+            (card4.charAt(0)==card5.charAt(0)))
+    {
+       return "Pair"; 
+    }
+    //High card
+    else
+    {
+        return "High card";
+    }
+        
+} //end evaluateHand method
+  
+//separate function to print the full card names
+public static void printHand(List<String> hand)
+{
+    for(int i=0; i<5; i++)
+    {
+        String card=hand.get(i);
+        //statements to print number/face value
+        switch(card.charAt(0))
+        {
+            case 'A':
+                System.out.print("Ace of ");
+                break;
+            case 'K':
+                System.out.print("King of ");
+                break;
+            case 'Q':
+                System.out.print("Queen of ");
+                break;
+            case 'J':
+                System.out.print("Jack of ");
+                break;
+            case 'T':
+                System.out.print("10 of ");
+                break;
+            case '9':
+                System.out.print("9 of ");
+                break;
+            case '8':
+                System.out.print("8 of ");
+                break;
+            case '7':
+                System.out.print("7 of ");
+                break;
+            case '6':
+                System.out.print("6 of ");
+                break;
+            case '5':
+                System.out.print("5 of ");
+                break;
+            case '4':
+                System.out.print("4 of ");
+                break;
+            case '3':
+                System.out.print("3 of ");
+                break;
+            case '2':
+                System.out.print("2 of ");
+                break;
+            default:
+                System.out.println("Error printing "+card+": Invalid card value");
+                break;
+        }    
+
+        //statements to print suit
+        switch(card.charAt(1))
+        {
+            case 'H':
+                System.out.println("Hearts");
+                break;
+            case 'D':
+                System.out.println("Diamonds");
+                break;
+            case 'S':
+                System.out.println("Spades");
+                break;
+            case 'C':
+                System.out.println("Clubs");
+                break;
+            default:
+                System.out.println("Error printing "+card+": invalid suit");
+                break;
+        }
+    }
+} //end printHand method
+
+ //separate method that sorts the hand
+public static String compareHands(String pEval, List<String> pHand, String cEval, List<String> cHand)
+{
+    if(pEval==cEval)
+    {   if(pEval=="Royal Flush") //all same suit, AKQJT
+        {
+            return "Player and computer tie with "+pEval;
+        }
+        else if(pEval=="Straight Flush") //all same suit, 5 cards in a row
+        {
+            //get highest cards
+            String pCard=pHand.get(0); //5 in a row so take pos 0 (highest) card
+            String cCard=cHand.get(0); //5 in a row so take pos 0 (highest) card
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player wins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer wins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player wins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer wins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player wins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer wins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player wins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer wins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player wins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer wins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            
+            }
+        }
+        else if(pEval=="4 of a kind") 
+        {
+            //get each 4 of a kind
+            String pCard=pHand.get(1); //4 of a kind so take pos 1 card
+            String cCard=cHand.get(1); //4 of a kind so take pos 1 card
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            }     
+        }
+        else if(pEval=="Full House") //3 of a kind and 2 of a kind
+        {
+            //find each 3 of a kind
+            String pCard=pHand.get(2);  //take the middle card
+            String cCard=cHand.get(2);  //take the middle card
+            //compare which 3 of a kindis larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            } 
+        }
+        else if(pEval=="Flush") //all same suit, any cards
+        {
+            return "Player and computer tie with "+pEval;
+        }
+        else if(pEval=="Straight") //5 in a row, any suit
+        {
+            //get highest card
+            String pCard=pHand.get(0); //5 in a row so take pos 0 (highest) card
+            String cCard=cHand.get(0); //5 in a row so take pos 0 (highest) card
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            } 
+        }
+        else if(pEval=="3 of a kind")
+        {
+            //get the 3 of a kind cards
+            String pCard=pHand.get(2); //3 of a kind so take pos 2 card
+            String cCard=cHand.get(2); //3 of a kind so take pos 2 card
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            }            
+        }
+        else if(pEval=="Two Pair")
+        {
+            String pCard="00";  //initialize
+            String cCard="00";  //initialize
+            String pCard1=pHand.get(0);
+            String pCard2=pHand.get(1);
+            String pCard3=pHand.get(2);
+            String pCard4=pHand.get(3);
+            String pCard5=pHand.get(4);
+            String cCard1=cHand.get(0);
+            String cCard2=cHand.get(1);
+            String cCard3=cHand.get(2);
+            String cCard4=cHand.get(3);
+            String cCard5=cHand.get(4);
+            //find each pair 
+            if(pCard1.charAt(0)==pCard2.charAt(0))
+            {
+                pCard=pCard1;
+            }
+            else if(pCard2.charAt(0)==pCard3.charAt(0))
+            {
+                pCard=pCard2;
+            }
+            else if(pCard3.charAt(0)==pCard4.charAt(0))
+            {
+                pCard=pCard3;
+            }
+            else if(pCard4.charAt(0)==pCard5.charAt(0))
+            {
+                pCard=pCard4;
+            }
+            
+            if(cCard1.charAt(0)==cCard2.charAt(0))
+            {
+                cCard=cCard1;
+            }
+            else if(cCard2.charAt(0)==cCard3.charAt(0))
+            {
+                cCard=cCard2;
+            }
+            else if(cCard3.charAt(0)==cCard4.charAt(0))
+            {
+                cCard=cCard3;
+            }
+            else if(cCard4.charAt(0)==cCard5.charAt(0))
+            {
+                cCard=cCard4;
+            }
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                            //same high pair, so find second pairs
+                            if(pCard1.charAt(0)==pCard2.charAt(0))
+                            {
+                                if(pCard.charAt(0)!=pCard1.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard1;
+                                }
+                            }
+                            else if(pCard2.charAt(0)==pCard3.charAt(0))
+                            {
+                                if(pCard.charAt(0)!=pCard2.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard2;
+                                }
+                            }
+                            else if(pCard3.charAt(0)==pCard4.charAt(0))
+                            {
+                               if(pCard.charAt(0)!=pCard3.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard3;
+                                }
+                            }
+                            else if(pCard4.charAt(0)==pCard5.charAt(0))
+                            {
+                                if(pCard.charAt(0)!=pCard4.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard4;
+                                }
+                            }
+
+                            if(cCard1.charAt(0)==cCard2.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard1.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard1;
+                                }
+                            }
+                            else if(cCard2.charAt(0)==cCard3.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard2.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard2;
+                                }
+                            }
+                            else if(cCard3.charAt(0)==cCard4.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard3.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard3;
+                                }
+                            }
+                            else if(cCard4.charAt(0)==cCard5.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard4.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard4;
+                                }
+                            }
+                            //compare second pairs
+                            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+                            {
+                                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                                     {
+                                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                                         {
+                                             return "Player and computer tie with "+pEval;
+                                         }
+                                         else if(pCard.charAt(0)=='A')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='A')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='K')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='K')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='Q')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='Q')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='J')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='J')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='T')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='T')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                     }
+                                     else //player has face card, computer has numeric
+                                     {
+                                         return "Player wins with "+pEval;   
+                                     }
+                            }
+                            else //player has numeric card
+                            {
+                                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                                {
+                                    return "Computer wins with "+cEval;
+                                }
+                                else //player has face card, computer has numeric
+                                {
+                                    //compare the numeric cards
+                                    if(pCard.charAt(0)==cCard.charAt(0))
+                                    {
+                                         return "Player and computer tie with "+pEval;
+                                    }
+                                     else
+                                    {
+                                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                                        {
+                                            return "Computer wins with "+cEval;
+                                        }
+                                        else
+                                        {
+                                         return "Player wins with "+pEval;   
+                                        }
+                                    }
+                                }
+                            }
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                        //same high pair, so find second pairs
+                            if(pCard1.charAt(0)==pCard2.charAt(0))
+                            {
+                                if(pCard.charAt(0)!=pCard1.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard1;
+                                }
+                            }
+                            else if(pCard2.charAt(0)==pCard3.charAt(0))
+                            {
+                                if(pCard.charAt(0)!=pCard2.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard2;
+                                }
+                            }
+                            else if(pCard3.charAt(0)==pCard4.charAt(0))
+                            {
+                               if(pCard.charAt(0)!=pCard3.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard3;
+                                }
+                            }
+                            else if(pCard4.charAt(0)==pCard5.charAt(0))
+                            {
+                                if(pCard.charAt(0)!=pCard4.charAt(0)) //not same pair 
+                                {
+                                    pCard=pCard4;
+                                }
+                            }
+
+                            if(cCard1.charAt(0)==cCard2.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard1.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard1;
+                                }
+                            }
+                            else if(cCard2.charAt(0)==cCard3.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard2.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard2;
+                                }
+                            }
+                            else if(cCard3.charAt(0)==cCard4.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard3.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard3;
+                                }
+                            }
+                            else if(cCard4.charAt(0)==cCard5.charAt(0))
+                            {
+                                if(cCard.charAt(0)!=cCard4.charAt(0)) //not same pair 
+                                {
+                                    cCard=cCard4;
+                                }
+                            }
+                            //compare second pairs
+                            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+                            {
+                                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                                     {
+                                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                                         {
+                                             return "Player and computer tie with "+pEval;
+                                         }
+                                         else if(pCard.charAt(0)=='A')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='A')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='K')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='K')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='Q')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='Q')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='J')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='J')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                         else if(pCard.charAt(0)=='T')
+                                         {
+                                             return "Player awins with "+pEval;
+                                         }
+                                         else if(cCard.charAt(0)=='T')
+                                         {
+                                             return "Computer awins with "+cEval;
+                                         }
+                                     }
+                                     else //player has face card, computer has numeric
+                                     {
+                                         return "Player wins with "+pEval;   
+                                     }
+                            }
+                            else //player has numeric card
+                            {
+                                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                                {
+                                    return "Computer wins with "+cEval;
+                                }
+                                else //player has face card, computer has numeric
+                                {
+                                    //compare the numeric cards
+                                    if(pCard.charAt(0)==cCard.charAt(0))
+                                    {
+                                         return "Player and computer tie with "+pEval;
+                                    }
+                                     else
+                                    {
+                                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                                        {
+                                            return "Computer wins with "+cEval;
+                                        }
+                                        else
+                                        {
+                                         return "Player wins with "+pEval;   
+                                        }
+                                    }
+                                }
+                            }
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            } 
+
+        }
+        else if(pEval=="Pair")
+        {
+            String pCard="00";  //initialize
+            String cCard="00";  //initialize
+            String pCard1=pHand.get(0);
+            String pCard2=pHand.get(1);
+            String pCard3=pHand.get(2);
+            String pCard4=pHand.get(3);
+            String pCard5=pHand.get(4);
+            String cCard1=cHand.get(0);
+            String cCard2=cHand.get(1);
+            String cCard3=cHand.get(2);
+            String cCard4=cHand.get(3);
+            String cCard5=cHand.get(4);
+            //find each pair 
+            if(pCard1.charAt(0)==pCard2.charAt(0))
+            {
+                pCard=pCard1;
+            }
+            else if(pCard2.charAt(0)==pCard3.charAt(0))
+            {
+                pCard=pCard2;
+            }
+            else if(pCard3.charAt(0)==pCard4.charAt(0))
+            {
+                pCard=pCard3;
+            }
+            else if(pCard4.charAt(0)==pCard5.charAt(0))
+            {
+                pCard=pCard4;
+            }
+            
+            if(cCard1.charAt(0)==cCard2.charAt(0))
+            {
+                cCard=cCard1;
+            }
+            else if(cCard2.charAt(0)==cCard3.charAt(0))
+            {
+                cCard=cCard2;
+            }
+            else if(cCard3.charAt(0)==cCard4.charAt(0))
+            {
+                cCard=cCard3;
+            }
+            else if(cCard4.charAt(0)==cCard5.charAt(0))
+            {
+                cCard=cCard4;
+            }
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //player has face card, computer has numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            } 
+        }
+        else if(pEval=="High card")
+        {
+            //get each high card
+            String pCard=pHand.get(0); //5 in a row so take pos 0 (highest) card
+            String cCard=cHand.get(0); //5 in a row so take pos 0 (highest) card
+            //compare which is larger
+            if(((pCard.charAt(0))>='A') &&  (pCard.charAt(0)<='T')) //player highest card is a face card
+            {
+                    if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player and computer have face cards
+                     {
+                         if(pCard.charAt(0)==cCard.charAt(0)) //cards equal, tie
+                         {
+                             return "Player and computer tie with "+pEval;
+                         }
+                         else if(pCard.charAt(0)=='A')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='A')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='K')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='K')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='Q')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='Q')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='J')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='J')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                         else if(pCard.charAt(0)=='T')
+                         {
+                             return "Player awins with "+pEval;
+                         }
+                         else if(cCard.charAt(0)=='T')
+                         {
+                             return "Computer awins with "+cEval;
+                         }
+                     }
+                     else //player has face card, computer has numeric
+                     {
+                         return "Player wins with "+pEval;   
+                     }
+            }
+            else //player has numeric card
+            {
+                if((((cCard.charAt(0))>='A')&&  (cCard.charAt(0)<='T'))) //player has numeric, computer has face card
+                {
+                    return "Computer wins with "+cEval;
+                }
+                else //both numeric
+                {
+                    //compare the numeric cards
+                    if(pCard.charAt(0)==cCard.charAt(0))
+                    {
+                         return "Player and computer tie with "+pEval;
+                    }
+                     else
+                    {
+                        if((Character.getNumericValue(pCard.charAt(0))) < (Character.getNumericValue(cCard.charAt(0)))) //player card less than computer card
+                        {
+                            return "Computer wins with "+cEval;
+                        }
+                        else
+                        {
+                         return "Player wins with "+pEval;   
+                        }
+                    }
+                }
+            }
+        }
+    }
+    else if(pEval=="Royal Flush")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Royal Flush")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="Straight Flush")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Straight Flush")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="4 of a kind")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="4 of a kind")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="Full House")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Full House")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="Flush")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Flush")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="Straight")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Straight")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="3 of a kind")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="3 of a kind")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="Two Pair")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Two Pair")
+    {
+        return "Computer wins with "+cEval;
+    }
+    else if(pEval=="Pair")
+    {
+        return "Player wins with "+pEval;
+    }
+    else if(cEval=="Pair")
+    {
+        return "Computer wins with "+cEval;
+    }
+    //default: should never reach this statement
+    return "Invalid comparison";
+    
+}
+
+//computerCardSelect WORK IN PROGRESS
+
+ //separate method that sorts the hand
+public static String computerCardSelect(List<String> hand, String cEval)
+{
+    return "00000";
+    switch(cEval)
+    {
+        case "High card":
+            //chect for possible straight
+            
+            //check for possible flush
+            
+            break;
+        case "Pair":
+            //
+            
+            break;
+        case "Two Pair":
+            //find 5th card and swap it out
+            
+            break;
+        case "3 of a kind":
+            //
+            
+            break;
+        default: //for straight, flush, full house, 4 of a kind, straight flush, royal flush
+            return "00000";
+            
+    }
+    
+    
+}
+    
+}//end file
+        
+ 
+
+
