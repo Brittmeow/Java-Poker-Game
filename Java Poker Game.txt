@@ -222,7 +222,6 @@ public class TheoryPoker
                             break; 
                         default:
                             //not a valid entry
-                            System.out.println("Not a valid entry. Only 0s and 1s accepted and only 3 or less cards can be swapped.");
                             break;
                     } //end switch statement
             computerHand=sortHand(computerHand); //sorts again
@@ -628,7 +627,9 @@ public static String evaluateHand(List<String> hand)
     else if(
             ((card1.charAt(0)==card2.charAt(0)) && (card3.charAt(0)==card4.charAt(0)))
             ||
-            ((card2.charAt(0)==card3.charAt(0)) && (card4.charAt(0)==card5.charAt(0))))
+            ((card2.charAt(0)==card3.charAt(0)) && (card4.charAt(0)==card5.charAt(0)))
+            ||
+            ((card1.charAt(0)==card2.charAt(0)) && (card4.charAt(0)==card5.charAt(0))))
     {
         return "Two Pair";
     }
@@ -1876,42 +1877,248 @@ public static String compareHands(String pEval, List<String> pHand, String cEval
     
 }
 
-//computerCardSelect WORK IN PROGRESS
-
  //separate method that sorts the hand
 public static String computerCardSelect(List<String> hand, String cEval)
 {
-    return "00000";
+    String card1=hand.get(0);
+    String card2=hand.get(1);
+    String card3=hand.get(2);
+    String card4=hand.get(3);
+    String card5=hand.get(4);
     switch(cEval)
     {
         case "High card":
-            //chect for possible straight
-            
-            //check for possible flush
-            
-            break;
+            //best option- try for flush/all same suit
+            //count up how many of each suit
+            int numHearts=0;
+            int numDiamonds=0;
+            int numSpades=0;
+            int numClubs=0;
+            switch(card1.charAt(1))
+            {
+                case 'H':
+                    numHearts++;
+                    break;
+                case 'D':
+                    numHearts++;
+                    break;
+                case 'S':
+                    numSpades++;
+                    break;
+                case 'C':
+                    numClubs++;
+                    break;
+            }
+            switch(card2.charAt(1))
+            {
+                case 'H':
+                    numHearts++;
+                    break;
+                case 'D':
+                    numHearts++;
+                    break;
+                case 'S':
+                    numSpades++;
+                    break;
+                case 'C':
+                    numClubs++;
+                    break;
+            }
+            switch(card3.charAt(1))
+            {
+                case 'H':
+                    numHearts++;
+                    break;
+                case 'D':
+                    numHearts++;
+                    break;
+                case 'S':
+                    numSpades++;
+                    break;
+                case 'C':
+                    numClubs++;
+                    break;
+            }
+            switch(card4.charAt(1))
+            {
+                case 'H':
+                    numHearts++;
+                    break;
+                case 'D':
+                    numHearts++;
+                    break;
+                case 'S':
+                    numSpades++;
+                    break;
+                case 'C':
+                    numClubs++;
+                    break;
+            }
+            switch(card5.charAt(1))
+            {
+                case 'H':
+                    numHearts++;
+                    break;
+                case 'D':
+                    numHearts++;
+                    break;
+                case 'S':
+                    numSpades++;
+                    break;
+                case 'C':
+                    numClubs++;
+                    break;
+            }
+            String cardSelectTemp="00000";
+            if(numDiamonds>=3) //mostly diamonds
+            {
+                if(card1.charAt(1)!='D')
+                {
+                    cardSelectTemp="1"+cardSelectTemp.substring(1);
+                }
+                if(card2.charAt(1)!='D')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,1)+"1"+cardSelectTemp.substring(2);
+                }
+                if(card3.charAt(1)!='D')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,2)+"1"+cardSelectTemp.substring(3);
+                }
+                if(card4.charAt(1)!='D')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,3)+"1"+cardSelectTemp.substring(4);
+                }
+                if(card5.charAt(1)!='D')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,4)+"1"+cardSelectTemp.substring(5);
+                }
+                return cardSelectTemp;
+            }
+            else if(numHearts>=3) //mostly hearts
+            {
+                if(card1.charAt(1)!='H')
+                {
+                    cardSelectTemp="1"+cardSelectTemp.substring(1);
+                }
+                if(card2.charAt(1)!='H')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,1)+"1"+cardSelectTemp.substring(2);
+                }
+                if(card3.charAt(1)!='H')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,2)+"1"+cardSelectTemp.substring(3);
+                }
+                if(card4.charAt(1)!='H')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,3)+"1"+cardSelectTemp.substring(4);
+                }
+                if(card5.charAt(1)!='H')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,4)+"1"+cardSelectTemp.substring(5);
+                }
+                return cardSelectTemp;
+            }
+            else if(numClubs>=3) //mostly clubs
+            {
+                if(card1.charAt(1)!='C')
+                {
+                    cardSelectTemp="1"+cardSelectTemp.substring(1);
+                }
+                if(card2.charAt(1)!='C')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,1)+"1"+cardSelectTemp.substring(2);
+                }
+                if(card3.charAt(1)!='C')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,2)+"1"+cardSelectTemp.substring(3);
+                }
+                if(card4.charAt(1)!='C')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,3)+"1"+cardSelectTemp.substring(4);
+                }
+                if(card5.charAt(1)!='C')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,4)+"1"+cardSelectTemp.substring(5);
+                }
+                return cardSelectTemp;
+            }
+            else if(numSpades>=3) //mostly spades
+            {
+                if(card1.charAt(1)!='S')
+                {
+                    cardSelectTemp="1"+cardSelectTemp.substring(1);
+                }
+                if(card2.charAt(1)!='S')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,1)+"1"+cardSelectTemp.substring(2);
+                }
+                if(card3.charAt(1)!='S')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,2)+"1"+cardSelectTemp.substring(3);
+                }
+                if(card4.charAt(1)!='S')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,3)+"1"+cardSelectTemp.substring(4);
+                }
+                if(card5.charAt(1)!='S')
+                {
+                    cardSelectTemp=cardSelectTemp.substring(0,4)+"1"+cardSelectTemp.substring(5);
+                }
+                return cardSelectTemp;
+            }
+            else //no majority of any one suit, just swap 3 lowest cards
+            {
+                return "00111";
+            }
         case "Pair":
-            //
-            
-            break;
+            //find the pair and trade the other 3 cards
+            if(card1.charAt(0)==card2.charAt(0))
+            {
+                return "00111";
+            }
+            else if(card2.charAt(0)==card3.charAt(0))
+            {
+                return "10011";
+            }
+            else if(card3.charAt(0)==card4.charAt(0))
+            {
+                return "11001";
+            }
+            else if(card4.charAt(0)==card5.charAt(0))
+            {
+                return "11100";
+            }
         case "Two Pair":
             //find 5th card and swap it out
-            
-            break;
+            if((card1.charAt(0)==card2.charAt(0))&&(card3.charAt(0)==card4.charAt(0)))
+            {
+                return "00001";
+            }
+            else if((card2.charAt(0)==card3.charAt(0))&&(card4.charAt(0)==card5.charAt(0)))
+            {
+                return "10000";
+            }
+            else if((card1.charAt(0)==card2.charAt(0))&&(card4.charAt(0)==card5.charAt(0)))
+            {
+                return "00100";
+            }
         case "3 of a kind":
-            //
-            
-            break;
+            //find the 3 of a kind and trade out the other 2 cards
+            if((card1.charAt(0)==card2.charAt(0))&&(card2.charAt(0)==card3.charAt(0)))
+            {
+                return "00011";
+            }
+            else if((card2.charAt(0)==card3.charAt(0))&&(card3.charAt(0)==card4.charAt(0)))
+            {
+                return "10001";
+            }
+            else if((card3.charAt(0)==card4.charAt(0))&&(card4.charAt(0)==card5.charAt(0)))
+            {
+                return "11000";
+            } 
         default: //for straight, flush, full house, 4 of a kind, straight flush, royal flush
-            return "00000";
-            
-    }
-    
-    
-}
+            return "00000";    
+    } //end switch cases   
+} //end computer hand swap function
     
 }//end file
-        
- 
-
-
